@@ -404,7 +404,7 @@ module.exports = grammar({
           $.glob,
           seq(
             $._case_pattern,
-            repeat(seq("|", $._case_pattern)),
+            repeat(seq("|", repeat("\n"), $._case_pattern)),
           ),
           seq("(", "else", ")"),
         ),
@@ -426,8 +426,8 @@ module.exports = grammar({
     tuple: ($) =>
       seq(
         $._expression,
-        ",",
-        optional(seq(commaSep1NoNewline($._expression), optional(","))),
+        repeat1(seq(",", repeat("\n"), $._expression)),
+        optional(","),
       ),
     return_statement: ($) =>
       seq(
@@ -447,6 +447,7 @@ module.exports = grammar({
               seq(
                 field("key", $._expression),
                 optional(seq(":", optional($._expression))),
+                repeat(seq(",", field("key", $._expression))),
               ),
               seq(":", $._expression),
             ),
