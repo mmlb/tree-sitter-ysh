@@ -27,6 +27,9 @@ const SPECIAL_CHARACTERS = [
   "\\s",
 ];
 
+// {a,b} or {a,{b,c}}: needs a comma and no whitespace, so it never matches a block
+const BRACE_EXPANSION = /\{[^\s{}'"$;|&<>()]*(\{[^\s{}'"$;|&<>()]*\}[^\s{}'"$;|&<>()]*)*,[^\s'"$;|&<>()]*\}/;
+
 const PREC = {
   UPDATE: 0,
   ASSIGN: 1,
@@ -827,11 +830,13 @@ module.exports = grammar({
         choice(
           noneOf("#", "@", ...SPECIAL_CHARACTERS),
           seq("\\", noneOf("\\s")),
+          BRACE_EXPANSION,
         ),
         repeat(choice(
           noneOf(...SPECIAL_CHARACTERS),
           seq("\\", noneOf("\\s")),
           "\\ ",
+          BRACE_EXPANSION,
         )),
       )),
     _statement_terminator: ($) =>
