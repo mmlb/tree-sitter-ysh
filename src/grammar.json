@@ -131,6 +131,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "sh_assignment"
+        },
+        {
+          "type": "SYMBOL",
           "name": "function_definition"
         },
         {
@@ -1959,6 +1963,17 @@
             ]
           }
         ]
+      }
+    },
+    "sh_assignment": {
+      "type": "PREC_RIGHT",
+      "value": 0,
+      "content": {
+        "type": "REPEAT1",
+        "content": {
+          "type": "SYMBOL",
+          "name": "environment"
+        }
       }
     },
     "multiline_command_call": {

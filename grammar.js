@@ -135,6 +135,7 @@ module.exports = grammar({
         $.variable_declaration,
         $.variable_assignment,
         $.command_call,
+        $.sh_assignment,
         $.function_definition,
         $.proc_definition,
         $.const_declaration,
@@ -332,6 +333,8 @@ module.exports = grammar({
           seq(choice("|", "&&", "||"), repeat("\n"), $._single_line_statement),
         ),
       )),
+    // x=1 or a=(1 2) without a command
+    sh_assignment: ($) => prec.right(repeat1($.environment)),
     multiline_command_call: ($) =>
       seq(
         "...",

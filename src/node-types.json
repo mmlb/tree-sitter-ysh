@@ -528,6 +528,10 @@
           "named": true
         },
         {
+          "type": "sh_assignment",
+          "named": true
+        },
+        {
           "type": "sh_case_statement",
           "named": true
         },
@@ -1069,6 +1073,10 @@
         },
         {
           "type": "sh_array_assignment",
+          "named": true
+        },
+        {
+          "type": "sh_assignment",
           "named": true
         },
         {
@@ -2348,6 +2356,10 @@
           "named": true
         },
         {
+          "type": "sh_assignment",
+          "named": true
+        },
+        {
           "type": "sh_case_statement",
           "named": true
         },
@@ -2902,6 +2914,10 @@
         },
         {
           "type": "redirection",
+          "named": true
+        },
+        {
+          "type": "sh_assignment",
           "named": true
         },
         {
@@ -4246,6 +4262,10 @@
           "named": true
         },
         {
+          "type": "sh_assignment",
+          "named": true
+        },
+        {
           "type": "sh_case_statement",
           "named": true
         },
@@ -4922,6 +4942,10 @@
           "named": true
         },
         {
+          "type": "sh_assignment",
+          "named": true
+        },
+        {
           "type": "sh_case_statement",
           "named": true
         },
@@ -5094,6 +5118,10 @@
           "named": true
         },
         {
+          "type": "sh_assignment",
+          "named": true
+        },
+        {
           "type": "sh_case_statement",
           "named": true
         },
@@ -5221,6 +5249,10 @@
           "named": true
         },
         {
+          "type": "sh_assignment",
+          "named": true
+        },
+        {
           "type": "sh_case_statement",
           "named": true
         },
@@ -5306,6 +5338,21 @@
     }
   },
   {
+    "type": "sh_assignment",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "environment",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "sh_case_item",
     "named": true,
     "fields": {},
@@ -5367,6 +5414,10 @@
         },
         {
           "type": "redirection",
+          "named": true
+        },
+        {
+          "type": "sh_assignment",
           "named": true
         },
         {
@@ -5512,6 +5563,10 @@
           "named": true
         },
         {
+          "type": "sh_assignment",
+          "named": true
+        },
+        {
           "type": "sh_case_statement",
           "named": true
         },
@@ -5611,6 +5666,10 @@
           "named": true
         },
         {
+          "type": "sh_assignment",
+          "named": true
+        },
+        {
           "type": "sh_case_statement",
           "named": true
         },
@@ -5695,6 +5754,10 @@
         },
         {
           "type": "redirection",
+          "named": true
+        },
+        {
+          "type": "sh_assignment",
           "named": true
         },
         {

@@ -1,0 +1,524 @@
+===================
+Float with exponent
+===================
+var x = 1.2 + 23.0e-1
+---
+
+(program
+  (variable_declaration
+    (variable_name)
+    (binary_expression
+      (number)
+      (number))))
+
+===========================
+Unary minus and bitwise not
+===========================
+return (-x)
+var y = ~mask
+---
+
+(program
+  (command_call
+    (command_name
+      (word))
+    (parameter_list_call
+      (unary_expression
+        (variable_name))))
+  (variable_declaration
+    (variable_name)
+    (unary_expression
+      (variable_name))))
+
+=================
+Range expressions
+=================
+var r = 1 ..= 3
+for i in (0 ..< n) { echo $i }
+---
+
+(program
+  (variable_declaration
+    (variable_name)
+    (binary_expression
+      (number)
+      (range_operator)
+      (number)))
+  (for_statement
+    (variable_name)
+    (binary_expression
+      (number)
+      (range_operator)
+      (variable_name))
+    (block
+      (command_call
+        (command_name
+          (word))
+        (expansion
+          (variable_name))))))
+
+======================================
+Floor division and compound assignment
+======================================
+var b = 9 // 3
+setvar x //= 2
+setvar z %= 3
+---
+
+(program
+  (variable_declaration
+    (variable_name)
+    (binary_expression
+      (number)
+      (number)))
+  (variable_assignment
+    (variable_name)
+    (number))
+  (variable_assignment
+    (variable_name)
+    (number)))
+
+=============
+Char literals
+=============
+var tab = \t
+var mu = \u{3bc}
+var dollar = \y24
+---
+
+(program
+  (variable_declaration
+    (variable_name)
+    (escaped_newline_value))
+  (variable_declaration
+    (variable_name)
+    (escaped_newline_value))
+  (variable_declaration
+    (variable_name)
+    (escaped_newline_value)))
+
+=======================
+Word lists with strings
+=======================
+var a = :| a 'b c' $x |
+var b = %(one two)
+---
+
+(program
+  (variable_declaration
+    (variable_name)
+    (literal_list
+      (word)
+      (string)
+      (expansion
+        (variable_name))))
+  (variable_declaration
+    (variable_name)
+    (literal_list
+      (word)
+      (word))))
+
+=========================
+Brace expansion operators
+=========================
+echo ${x:-default} ${#s} ${s/a/b} ${x|html} ${arr[@]}
+---
+
+(program
+  (command_call
+    (command_name
+      (word))
+    (expansion
+      (variable_name)
+      (word))
+    (expansion
+      (variable_name))
+    (expansion
+      (variable_name)
+      (word))
+    (expansion
+      (variable_name)
+      (word))
+    (expansion
+      (variable_name))))
+
+===============
+Template string
+===============
+var t = ^"x is $x"
+---
+
+(program
+  (variable_declaration
+    (variable_name)
+    (string
+      (expansion
+        (variable_name)))))
+
+=====================
+Single quotes are raw
+=====================
+echo 'a \u03bc b'
+---
+
+(program
+  (command_call
+    (command_name
+      (word))
+    (string)))
+
+============================
+Chain call without arguments
+============================
+pp test_ (d => keys())
+---
+
+(program
+  (command_call
+    (command_name
+      (word))
+    (word)
+    (parameter_list_call
+      (binary_expression
+        (variable_name)
+        (function_call
+          (function_name
+            (variable_name)))))))
+
+=====================================
+Call with spreads and named arguments
+=====================================
+call f(; x=9, y=10)
+call f(...a; ...d)
+---
+
+(program
+  (expression_mode
+    (function_call
+      (function_name
+        (variable_name))
+      (named_parameter
+        (variable_name)
+        (number))
+      (named_parameter
+        (variable_name)
+        (number))))
+  (expression_mode
+    (function_call
+      (function_name
+        (variable_name))
+      (spread
+        (variable_name))
+      (spread
+        (variable_name)))))
+
+============
+Bound method
+============
+var m = s->upper
+---
+
+(program
+  (variable_declaration
+    (variable_name)
+    (variable_name)
+    (method_call
+      (function_name
+        (variable_name)))))
+
+=====
+Tuple
+=====
+var t = (1,
+  2, 3)
+---
+
+(program
+  (variable_declaration
+    (variable_name)
+    (tuple
+      (number)
+      (number)
+      (number))))
+
+================
+Type annotations
+================
+var x Int = 3
+func f (s Str, n) { return (n) }
+proc p (a; b; opt Int = 42) { echo }
+---
+
+(program
+  (variable_declaration
+    (variable_name)
+    (type)
+    (number))
+  (function_definition
+    (function_name
+      (variable_name))
+    (parameter_list
+      (variable_name)
+      (type)
+      (variable_name))
+    (func_block
+      (func_return
+        (variable_name))))
+  (proc_definition
+    (proc_name)
+    (proc_parameter_list
+      (variable_name)
+      (variable_name)
+      (named_parameter
+        (variable_name)
+        (type)
+        (number)))
+    (proc_block
+      (command_call
+        (command_name
+          (word))))))
+
+========================
+Brace expansion in words
+========================
+touch {foo,bar}.py
+xargs -I {} echo {}
+---
+
+(program
+  (command_call
+    (command_name
+      (word))
+    (word))
+  (command_call
+    (command_name
+      (word))
+    (word)
+    (word)
+    (word)
+    (word)))
+
+========
+Here doc
+========
+cat <<EOF | tac
+line $x
+EOF
+json8 read <<'END'
+{}
+END
+echo done
+---
+
+(program
+  (command_call
+    (command_name
+      (word))
+    (redirection
+      (heredoc_start))
+    (command_call
+      (command_name
+        (word))))
+  (heredoc_body)
+  (command_call
+    (command_name
+      (word))
+    (word)
+    (redirection
+      (heredoc_start)))
+  (heredoc_body)
+  (command_call
+    (command_name
+      (word))
+    (word)))
+
+=================
+Case alternatives
+=================
+case (ch) {
+  (\r) |
+  (\n) { echo newline }
+  $x | $y { echo var }
+}
+---
+
+(program
+  (case_statement
+    (variable_name)
+    (case_condition
+      (escaped_newline_value)
+      (escaped_newline_value)
+      (block
+        (command_call
+          (command_name
+            (word))
+          (word))))
+    (case_condition
+      (expansion
+        (variable_name))
+      (expansion
+        (variable_name))
+      (block
+        (command_call
+          (command_name
+            (word))
+          (word))))))
+
+===================
+Multiline condition
+===================
+if ( (a and b) or
+     (c and d) ) { echo yes }
+---
+
+(program
+  (if_statement
+    (binary_expression
+      (binary_expression
+        (variable_name)
+        (variable_name))
+      (binary_expression
+        (variable_name)
+        (variable_name)))
+    (block
+      (command_call
+        (command_name
+          (word))
+        (word)))))
+
+========================
+Compound redirect target
+========================
+json read (&x) < $TMP/foo.txt
+---
+
+(program
+  (command_call
+    (command_name
+      (word))
+    (word)
+    (parameter_list_call
+      (unary_expression
+        (variable_name)))
+    (redirection
+      (expansion
+        (variable_name))
+      (word))))
+
+========
+POSIX if
+========
+if test -n foo; then
+  echo one
+elif true; then
+  echo two
+else
+  echo three
+fi
+---
+
+(program
+  (sh_if_statement
+    (command_call
+      (command_name
+        (word))
+      (word)
+      (word))
+    (command_call
+      (command_name
+        (word))
+      (word))
+    (command_call
+      (command_name
+        (word)))
+    (command_call
+      (command_name
+        (word))
+      (word))
+    (command_call
+      (command_name
+        (word))
+      (word))))
+
+===========
+POSIX loops
+===========
+for i in 1 2; do
+  echo $i
+done
+while read -r line; do
+  echo $line
+done
+---
+
+(program
+  (sh_for_statement
+    (variable_name)
+    (number)
+    (number)
+    (command_call
+      (command_name
+        (word))
+      (expansion
+        (variable_name))))
+  (sh_while_statement
+    (command_call
+      (command_name
+        (word))
+      (word)
+      (word))
+    (command_call
+      (command_name
+        (word))
+      (expansion
+        (variable_name)))))
+
+==========
+POSIX case
+==========
+case $SH in
+  *osh)
+    echo osh
+    ;;
+  bash|zsh) exit ;;
+esac
+---
+
+(program
+  (sh_case_statement
+    (expansion
+      (variable_name))
+    (sh_case_item
+      (word)
+      (command_call
+        (command_name
+          (word))
+        (word)))
+    (sh_case_item
+      (word)
+      (word)
+      (command_call
+        (command_name
+          (word))))))
+
+============
+POSIX arrays
+============
+a=(1 2)
+declare -A A=([k]=v [k2]=v2)
+---
+
+(program
+  (sh_assignment
+    (environment
+      (variable_name)
+      (number)
+      (number)))
+  (command_call
+    (command_name
+      (word))
+    (word)
+    (sh_array_assignment
+      (variable_name)
+      (word)
+      (word))))

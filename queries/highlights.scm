@@ -12,6 +12,9 @@
   "for"
   "in"
   "while"
+  "until"
+  "do"
+  "done"
 ] @keyword.repeat
 
 [
@@ -19,6 +22,9 @@
  "elif"
  "else"
  "case"
+ "then"
+ "fi"
+ "esac"
 ] @keyword.conditional
 
 (number) @number
@@ -72,6 +78,15 @@
   "-="
   "*="
   "/="
+  "//"
+  "//="
+  "%="
+  "**="
+  "<<="
+  ">>="
+  "&="
+  "|="
+  "^="
   "==="
   "~=="
   "!=="
@@ -88,6 +103,9 @@
   "..."
   "&&"
   "||"
+  ";;"
+  ";&"
+  ";;&"
   (range_operator)
 ] @operator
 
@@ -149,7 +167,14 @@ parameter: (variable_name) @variable.parameter
   "/"
 ] @punctuation.bracket
 
-(literal_list [ ":|" "|" ] @punctuation.bracket)
+(literal_list [ ":|" "%(" "|" ")" ] @punctuation.bracket)
+
+(type) @type
+
+[
+  (heredoc_start)
+  (heredoc_body)
+] @string
 
 "," @punctuation.delimiter
 
