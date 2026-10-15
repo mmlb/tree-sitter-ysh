@@ -430,18 +430,17 @@ module.exports = grammar({
         choice($._literal, $.word),
         "in",
         repeat("\n"),
-        repeat($.sh_case_item),
+        repeat(seq($.sh_case_item, choice(";;", ";&", ";;&"), repeat("\n"))),
+        optional($.sh_case_item),
         "esac",
       ),
     sh_case_item: ($) =>
-      prec.right(seq(
+      seq(
         choice($._literal, $.word),
         repeat(seq("|", choice($._literal, $.word))),
         ")",
         optional($._sh_body),
-        optional(choice(";;", ";&", ";;&")),
-        repeat("\n"),
-      )),
+      ),
     _control_flow_condition: ($) => choice($._paren_expression, $.command_call),
     while_statement: ($) =>
       prec.right(seq("while", $._control_flow_condition, $.block)),
