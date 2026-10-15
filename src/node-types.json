@@ -266,6 +266,10 @@
             "named": false
           },
           {
+            "type": "//",
+            "named": false
+          },
+          {
             "type": "<",
             "named": false
           },
@@ -320,6 +324,10 @@
           {
             "type": "or",
             "named": false
+          },
+          {
+            "type": "range_operator",
+            "named": true
           },
           {
             "type": "|",
@@ -2626,10 +2634,6 @@
           "named": true
         },
         {
-          "type": "range_operator",
-          "named": true
-        },
-        {
           "type": "string",
           "named": true
         },
@@ -3610,6 +3614,22 @@
       "multiple": true,
       "required": false,
       "types": [
+        {
+          "type": "boolean",
+          "named": true
+        },
+        {
+          "type": "expansion",
+          "named": true
+        },
+        {
+          "type": "number",
+          "named": true
+        },
+        {
+          "type": "string",
+          "named": true
+        },
         {
           "type": "word",
           "named": true
@@ -4719,6 +4739,11 @@
         }
       ]
     }
+  },
+  {
+    "type": "range_operator",
+    "named": true,
+    "fields": {}
   },
   {
     "type": "redirection",
@@ -5872,11 +5897,23 @@
     "named": false
   },
   {
+    "type": "%(",
+    "named": false
+  },
+  {
+    "type": "%=",
+    "named": false
+  },
+  {
     "type": "&",
     "named": false
   },
   {
     "type": "&&",
+    "named": false
+  },
+  {
+    "type": "&=",
     "named": false
   },
   {
@@ -5909,6 +5946,10 @@
   },
   {
     "type": "**",
+    "named": false
+  },
+  {
+    "type": "**=",
     "named": false
   },
   {
@@ -5952,7 +5993,23 @@
     "named": false
   },
   {
+    "type": "..<",
+    "named": false
+  },
+  {
+    "type": "..=",
+    "named": false
+  },
+  {
     "type": "/",
+    "named": false
+  },
+  {
+    "type": "//",
+    "named": false
+  },
+  {
+    "type": "//=",
     "named": false
   },
   {
@@ -5989,6 +6046,10 @@
   },
   {
     "type": "<<<",
+    "named": false
+  },
+  {
+    "type": "<<=",
     "named": false
   },
   {
@@ -6032,6 +6093,10 @@
     "named": false
   },
   {
+    "type": ">>=",
+    "named": false
+  },
+  {
     "type": ">|",
     "named": false
   },
@@ -6049,6 +6114,10 @@
   },
   {
     "type": "^",
+    "named": false
+  },
+  {
+    "type": "^=",
     "named": false
   },
   {
@@ -6158,10 +6227,6 @@
     "named": false
   },
   {
-    "type": "range_operator",
-    "named": true
-  },
-  {
     "type": "return",
     "named": false
   },
@@ -6215,6 +6280,10 @@
   },
   {
     "type": "|",
+    "named": false
+  },
+  {
+    "type": "|=",
     "named": false
   },
   {

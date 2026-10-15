@@ -65,9 +65,10 @@ for i in (3 ..< 5) {  # range operator ..<
 (program
   (for_statement
     (variable_name)
-    (number)
-    (range_operator)
-    (number)
+    (binary_expression
+      (number)
+      (range_operator)
+      (number))
     (block
       (comment)
       (command_call

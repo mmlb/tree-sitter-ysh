@@ -99,6 +99,7 @@ module.exports = grammar({
   },
   conflicts: ($) => [
     [$.variable_assignment],
+    [$.number],
   ],
   rules: {
     program: ($) => optional($._statements),
@@ -303,7 +304,7 @@ module.exports = grammar({
         commaSep1NoNewline(
           seq(field("variable", $.variable_name), repeat($._variable_access)),
         ),
-        choice("=", "+=", "-=", "*=", "/="),
+        choice("=", "+=", "-=", "*=", "/=", "//=", "%=", "**=", "<<=", ">>=", "&=", "|=", "^="),
         commaSep1NoNewline(
           field("value", $._expression),
         ),
@@ -363,7 +364,6 @@ module.exports = grammar({
       ),
     _for_clause: ($) =>
       choice(
-        $._for_range,
         $._paren_expression,
         prec.left(field(
           "value",
@@ -373,8 +373,6 @@ module.exports = grammar({
           )),
         )),
       ),
-    _for_range: ($) =>
-      seq("(", $._expression, $.range_operator, $._expression, ")"),
     _control_flow_condition: ($) => choice($._paren_expression, $.command_call),
     while_statement: ($) =>
       prec.right(seq("while", $._control_flow_condition, $.block)),
@@ -479,7 +477,11 @@ module.exports = grammar({
         commaSepWithTrailing($, $._expression),
         alias($.close_bracket, "]"),
       ),
-    literal_list: ($) => seq(":|", repeat($.word), alias($.closing_list, "|")),
+    literal_list: ($) =>
+      choice(
+        seq(":|", repeat(choice($.word, $._literal)), alias($.closing_list, "|")),
+        seq("%(", repeat(choice($.word, $._literal)), alias($.close_paren, ")")),
+      ),
     named_parameter: ($) =>
       seq(
         $.variable_name,
@@ -599,7 +601,8 @@ module.exports = grammar({
         [choice("<", ">", "<=", ">=", "~", "!~", "~~", "!~~"), PREC.COMPARE],
         [choice("<<", ">>"), PREC.SHIFT],
         [choice("+", "-", "++"), PREC.ADD],
-        [choice("*", "/", "%"), PREC.MULTIPLY],
+        [choice("*", "/", "//", "%"), PREC.MULTIPLY],
+        [$.range_operator, PREC.TEST],
         ["**", PREC.EXPONENT],
         ["=>", PREC.CHAIN],
       ];
@@ -629,10 +632,10 @@ module.exports = grammar({
         ),
       ),
     unary_expression: ($) =>
-      seq(
-        choice("not", "&", "+"),
+      prec(PREC.UNARY, seq(
+        choice("not", "&", "+", "-", "~"),
         $._expression,
-      ),
+      )),
     redirection: ($) =>
       prec(
         20,
@@ -728,7 +731,8 @@ module.exports = grammar({
     escaped_double_quote: (_) => '\\"',
     escaped_single_quote: (_) => "\\'",
     escaped_newline: (_) => "\\\n",
-    escaped_newline_value: (_) => "\\n",
+    escaped_newline_value: (_) =>
+      token(choice(/\\[nrt0\\]/, /\\u\{[0-9a-fA-F]{1,6}\}/, /\\y[0-9a-fA-F]{2}/)),
     escape_special_characters: (_) =>
       token.immediate(seq("\\", choice("\\", "$"))),
     function_name: ($) => $.variable_name,
@@ -754,7 +758,7 @@ module.exports = grammar({
           /0b[01]+(?:(?:_[01]+)*)?/,
         ),
       ),
-    _decimal: (_) => /\d+(_\d+)*(\.\d+)?(_\d+)*/,
+    _decimal: (_) => /\d+(_\d+)*(\.\d+(_\d+)*)?([eE][+-]?\d+(_\d+)*)?/,
     escaped_bytes: (_) => /\\y[a-fA-F0-9]{2}/,
     escape_sequence: (_) =>
       choice(
@@ -763,7 +767,7 @@ module.exports = grammar({
       ),
     null: (_) => "null",
     boolean: (_) => choice("true", "false"),
-    range_operator: (_) => "..<",
+    range_operator: (_) => choice("..<", "..="),
     comment: (_) => token(prec(-10, /#.*/)),
     word: (_) =>
       token(seq(
