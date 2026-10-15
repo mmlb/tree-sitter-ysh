@@ -167,6 +167,7 @@ module.exports = grammar({
         $._postfix,
         $.unary_expression,
         $.binary_expression,
+        $.conditional_expression,
         $._paren_expression,
         $.expansion,
       ),
@@ -616,6 +617,17 @@ module.exports = grammar({
         );
       }));
     },
+    conditional_expression: ($) =>
+      prec.right(
+        PREC.TERNARY,
+        seq(
+          field("consequence", $._expression),
+          "if",
+          field("condition", $._expression),
+          "else",
+          field("alternative", $._expression),
+        ),
+      ),
     unary_expression: ($) =>
       seq(
         choice("not", "&", "+"),

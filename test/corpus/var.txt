@@ -234,3 +234,22 @@ const YSH = $(command -v ysh)
           (word))
         (word)
         (word)))))
+
+================================================================================
+Conditional expression
+================================================================================
+
+var x = a if len(b) else 'c'
+
+--------------------------------------------------------------------------------
+
+(program
+  (variable_declaration
+    (variable_name)
+    (conditional_expression
+      (variable_name)
+      (function_call
+        (function_name
+          (variable_name))
+        (variable_name))
+      (string))))
