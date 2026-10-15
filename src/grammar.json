@@ -2347,12 +2347,29 @@
               "name": "glob"
             },
             {
-              "type": "SYMBOL",
-              "name": "_paren_expression"
-            },
-            {
-              "type": "SYMBOL",
-              "name": "eggex"
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "_case_pattern"
+                },
+                {
+                  "type": "REPEAT",
+                  "content": {
+                    "type": "SEQ",
+                    "members": [
+                      {
+                        "type": "STRING",
+                        "value": "|"
+                      },
+                      {
+                        "type": "SYMBOL",
+                        "name": "_case_pattern"
+                      }
+                    ]
+                  }
+                }
+              ]
             },
             {
               "type": "SEQ",
@@ -2376,6 +2393,27 @@
         {
           "type": "SYMBOL",
           "name": "block"
+        }
+      ]
+    },
+    "_case_pattern": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "expansion"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "string"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_paren_expression"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "eggex"
         }
       ]
     },
@@ -3779,7 +3817,7 @@
                   "type": "ALIAS",
                   "content": {
                     "type": "PATTERN",
-                    "value": "[0-9\\*\\?\\#\\@]"
+                    "value": "[0-9\\*\\?\\#\\@\\$!]"
                   },
                   "named": true,
                   "value": "variable_name"
@@ -3836,7 +3874,7 @@
                   "type": "ALIAS",
                   "content": {
                     "type": "PATTERN",
-                    "value": "[0-9\\*\\?\\#\\@]"
+                    "value": "[0-9\\*\\?\\#\\@\\$!]"
                   },
                   "named": true,
                   "value": "variable_name"
@@ -4140,17 +4178,8 @@
           }
         },
         {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "command_call"
-            },
-            {
-              "type": "SYMBOL",
-              "name": "multiline_command_call"
-            }
-          ]
+          "type": "SYMBOL",
+          "name": "_statement"
         }
       ]
     },
@@ -4177,6 +4206,13 @@
                 "content": {
                   "type": "STRING",
                   "value": "or"
+                }
+              },
+              {
+                "type": "REPEAT",
+                "content": {
+                  "type": "STRING",
+                  "value": "\n"
                 }
               },
               {
@@ -4213,6 +4249,13 @@
                 }
               },
               {
+                "type": "REPEAT",
+                "content": {
+                  "type": "STRING",
+                  "value": "\n"
+                }
+              },
+              {
                 "type": "FIELD",
                 "name": "right",
                 "content": {
@@ -4243,6 +4286,13 @@
                 "content": {
                   "type": "STRING",
                   "value": "|"
+                }
+              },
+              {
+                "type": "REPEAT",
+                "content": {
+                  "type": "STRING",
+                  "value": "\n"
                 }
               },
               {
@@ -4279,6 +4329,13 @@
                 }
               },
               {
+                "type": "REPEAT",
+                "content": {
+                  "type": "STRING",
+                  "value": "\n"
+                }
+              },
+              {
                 "type": "FIELD",
                 "name": "right",
                 "content": {
@@ -4309,6 +4366,13 @@
                 "content": {
                   "type": "STRING",
                   "value": "&"
+                }
+              },
+              {
+                "type": "REPEAT",
+                "content": {
+                  "type": "STRING",
+                  "value": "\n"
                 }
               },
               {
@@ -4400,6 +4464,13 @@
                 }
               },
               {
+                "type": "REPEAT",
+                "content": {
+                  "type": "STRING",
+                  "value": "\n"
+                }
+              },
+              {
                 "type": "FIELD",
                 "name": "right",
                 "content": {
@@ -4466,6 +4537,13 @@
                 }
               },
               {
+                "type": "REPEAT",
+                "content": {
+                  "type": "STRING",
+                  "value": "\n"
+                }
+              },
+              {
                 "type": "FIELD",
                 "name": "right",
                 "content": {
@@ -4505,6 +4583,13 @@
                       "value": ">>"
                     }
                   ]
+                }
+              },
+              {
+                "type": "REPEAT",
+                "content": {
+                  "type": "STRING",
+                  "value": "\n"
                 }
               },
               {
@@ -4551,6 +4636,13 @@
                       "value": "++"
                     }
                   ]
+                }
+              },
+              {
+                "type": "REPEAT",
+                "content": {
+                  "type": "STRING",
+                  "value": "\n"
                 }
               },
               {
@@ -4604,6 +4696,13 @@
                 }
               },
               {
+                "type": "REPEAT",
+                "content": {
+                  "type": "STRING",
+                  "value": "\n"
+                }
+              },
+              {
                 "type": "FIELD",
                 "name": "right",
                 "content": {
@@ -4634,6 +4733,13 @@
                 "content": {
                   "type": "SYMBOL",
                   "name": "range_operator"
+                }
+              },
+              {
+                "type": "REPEAT",
+                "content": {
+                  "type": "STRING",
+                  "value": "\n"
                 }
               },
               {
@@ -4670,6 +4776,13 @@
                 }
               },
               {
+                "type": "REPEAT",
+                "content": {
+                  "type": "STRING",
+                  "value": "\n"
+                }
+              },
+              {
                 "type": "FIELD",
                 "name": "right",
                 "content": {
@@ -4700,6 +4813,13 @@
                 "content": {
                   "type": "STRING",
                   "value": "=>"
+                }
+              },
+              {
+                "type": "REPEAT",
+                "content": {
+                  "type": "STRING",
+                  "value": "\n"
                 }
               },
               {
@@ -4884,6 +5004,25 @@
                       "name": "_literal"
                     }
                   ]
+                }
+              },
+              {
+                "type": "REPEAT",
+                "content": {
+                  "type": "FIELD",
+                  "name": "redirection_value",
+                  "content": {
+                    "type": "ALIAS",
+                    "content": {
+                      "type": "IMMEDIATE_TOKEN",
+                      "content": {
+                        "type": "PATTERN",
+                        "value": "[^\\s$'\"#;&|<>(){}\\[\\]`\\\\]+"
+                      }
+                    },
+                    "named": true,
+                    "value": "word"
+                  }
                 }
               }
             ]
@@ -5678,6 +5817,10 @@
               {
                 "type": "PATTERN",
                 "value": "\\{[^\\s{}'\"$;|&<>()]*(\\{[^\\s{}'\"$;|&<>()]*\\}[^\\s{}'\"$;|&<>()]*)*,[^\\s'\"$;|&<>()]*\\}"
+              },
+              {
+                "type": "STRING",
+                "value": "{}"
               }
             ]
           },

@@ -400,8 +400,22 @@ module.exports = grammar({
       )),
     case_condition: ($) =>
       seq(
-        choice($.glob, $._paren_expression, $.eggex, seq("(", "else", ")")),
+        choice(
+          $.glob,
+          seq(
+            $._case_pattern,
+            repeat(seq("|", $._case_pattern)),
+          ),
+          seq("(", "else", ")"),
+        ),
         $.block,
+      ),
+    _case_pattern: ($) =>
+      choice(
+        $.expansion,
+        $.string,
+        $._paren_expression,
+        $.eggex,
       ),
     _paren_expression: ($) =>
       seq(
@@ -580,13 +594,13 @@ module.exports = grammar({
       choice(
         seq(
           alias($.dollar_expansion, "$"),
-          choice($.variable_name, alias(/[0-9\*\?\#\@]/, $.variable_name)),
+          choice($.variable_name, alias(/[0-9\*\?\#\@\$!]/, $.variable_name)),
         ),
         seq(
           alias($.dollar_expansion, "$"),
           "{",
           optional(choice("#", "!")),
-          choice($.variable_name, alias(/[0-9\*\?\#\@]/, $.variable_name)),
+          choice($.variable_name, alias(/[0-9\*\?\#\@\$!]/, $.variable_name)),
           optional(seq("[", choice("@", "*", $._expression), "]")),
           optional(seq(
             choice(
@@ -631,7 +645,7 @@ module.exports = grammar({
     _embed_statements: ($) =>
       seq(
         repeat($._terminated_statement),
-        choice($.command_call, $.multiline_command_call),
+        $._statement,
       ),
     binary_expression: ($) => {
       const table = [
@@ -667,6 +681,7 @@ module.exports = grammar({
             field("left", $._expression),
             // @ts-ignore
             field("operator", operator),
+            repeat("\n"),
             field("right", $._expression),
           ),
         );
@@ -707,6 +722,10 @@ module.exports = grammar({
               "<<<",
             ),
             field("redirection_value", choice($.word, $._literal)),
+            repeat(field(
+              "redirection_value",
+              alias(token.immediate(/[^\s$'"#;&|<>(){}\[\]`\\]+/), $.word),
+            )),
           ),
           seq("<(", $._embed_statements, ")"),
           seq("<<", $.heredoc_start),
@@ -835,6 +854,7 @@ module.exports = grammar({
           noneOf("#", "@", ...SPECIAL_CHARACTERS),
           seq("\\", noneOf("\\s")),
           BRACE_EXPANSION,
+          "{}",
         ),
         repeat(choice(
           noneOf(...SPECIAL_CHARACTERS),

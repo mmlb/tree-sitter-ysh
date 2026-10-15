@@ -272,7 +272,8 @@ bool tree_sitter_ysh_external_scanner_scan(void *payload, TSLexer *lexer,
       lexer->result_symbol = DOLLAR_EXPANSION;
       return true;
     } else if (lexer->lookahead == '*' || lexer->lookahead == '?' ||
-               lexer->lookahead == '#' || lexer->lookahead == '@') {
+               lexer->lookahead == '#' || lexer->lookahead == '@' ||
+               lexer->lookahead == '$' || lexer->lookahead == '!') {
       lexer->advance(lexer, false);
       if (!is_alnum_(lexer->lookahead)) {
         lexer->result_symbol = DOLLAR_EXPANSION;
