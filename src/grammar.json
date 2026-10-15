@@ -4904,6 +4904,19 @@
                 "value": ")"
               }
             ]
+          },
+          {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "STRING",
+                "value": "<<"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "heredoc_start"
+              }
+            ]
           }
         ]
       }
@@ -5759,6 +5772,10 @@
     {
       "type": "SYMBOL",
       "name": "escaped_newline"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "heredoc_body"
     }
   ],
   "conflicts": [
@@ -5846,6 +5863,14 @@
     {
       "type": "SYMBOL",
       "name": "error_sentinel"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "heredoc_start"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "heredoc_body"
     }
   ],
   "inline": [],

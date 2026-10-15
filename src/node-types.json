@@ -4977,6 +4977,10 @@
           "named": true
         },
         {
+          "type": "heredoc_start",
+          "named": true
+        },
+        {
           "type": "if_statement",
           "named": true
         },
@@ -6847,6 +6851,15 @@
   {
     "type": "func",
     "named": false
+  },
+  {
+    "type": "heredoc_body",
+    "named": true,
+    "extra": true
+  },
+  {
+    "type": "heredoc_start",
+    "named": true
   },
   {
     "type": "if",

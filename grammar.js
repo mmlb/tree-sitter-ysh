@@ -63,6 +63,7 @@ module.exports = grammar({
     $.comment,
     $._newline,
     $.escaped_newline,
+    $.heredoc_body,
   ],
   externals: ($) => [
     $.dollar_expansion,
@@ -84,6 +85,8 @@ module.exports = grammar({
     $._multiline_command_sentinel,
     $._comma_sentinel,
     $.error_sentinel,
+    $.heredoc_start,
+    $.heredoc_body,
   ],
   reserved: {
     global: (_$) => [
@@ -706,6 +709,7 @@ module.exports = grammar({
             field("redirection_value", choice($.word, $._literal)),
           ),
           seq("<(", $._embed_statements, ")"),
+          seq("<<", $.heredoc_start),
         ),
       ),
     _double_quotes_string: ($) =>

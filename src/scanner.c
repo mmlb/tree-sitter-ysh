@@ -1,4 +1,5 @@
 #include "tree_sitter/parser.h"
+#include <stdlib.h>
 #include <string.h>
 
 enum TokenType {
@@ -21,7 +22,24 @@ enum TokenType {
   MULTILINE_CMD_SENTINEL,
   COMMA_SENTINEL,
   ERROR_SENTINEL,
+  HEREDOC_START,
+  HEREDOC_BODY,
 };
+
+#define MAX_HEREDOCS 8
+#define MAX_DELIMITER 64
+
+// Here docs opened on the current line, waiting for their body on the next one.
+typedef struct {
+  uint8_t len;
+  bool strip_tabs;
+  char delimiter[MAX_DELIMITER];
+} Heredoc;
+
+typedef struct {
+  uint8_t count;
+  Heredoc pending[MAX_HEREDOCS];
+} Scanner;
 
 static inline bool is_alpha_(int c) {
   return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_';
@@ -31,23 +49,138 @@ static inline bool is_num_(int c) { return (c >= '0' && c <= '9'); }
 
 static inline bool is_alnum_(int c) { return is_alpha_(c) || is_num_(c); }
 
-void *tree_sitter_ysh_external_scanner_create() { return NULL; }
+void *tree_sitter_ysh_external_scanner_create() {
+  return calloc(1, sizeof(Scanner));
+}
 
-void tree_sitter_ysh_external_scanner_destroy(void *p) {}
+void tree_sitter_ysh_external_scanner_destroy(void *p) { free(p); }
 
-void tree_sitter_ysh_external_scanner_reset(void *p) {}
+void tree_sitter_ysh_external_scanner_reset(void *p) {
+  ((Scanner *)p)->count = 0;
+}
 
 unsigned tree_sitter_ysh_external_scanner_serialize(void *p, char *buffer) {
-  return 0;
+  Scanner *scanner = p;
+  unsigned size = 0;
+  buffer[size++] = (char)scanner->count;
+  for (uint8_t i = 0; i < scanner->count; i++) {
+    Heredoc *h = &scanner->pending[i];
+    buffer[size++] = (char)h->strip_tabs;
+    buffer[size++] = (char)h->len;
+    memcpy(&buffer[size], h->delimiter, h->len);
+    size += h->len;
+  }
+  return size;
 }
 
 void tree_sitter_ysh_external_scanner_deserialize(void *p, const char *b,
-                                                  unsigned n) {}
+                                                  unsigned n) {
+  Scanner *scanner = p;
+  scanner->count = 0;
+  if (n == 0) {
+    return;
+  }
+  unsigned size = 0;
+  scanner->count = (uint8_t)b[size++];
+  for (uint8_t i = 0; i < scanner->count; i++) {
+    Heredoc *h = &scanner->pending[i];
+    h->strip_tabs = b[size++];
+    h->len = (uint8_t)b[size++];
+    memcpy(h->delimiter, &b[size], h->len);
+    size += h->len;
+  }
+}
+
+static bool scan_heredoc_start(Scanner *scanner, TSLexer *lexer) {
+  if (scanner->count >= MAX_HEREDOCS) {
+    return false;
+  }
+  Heredoc *h = &scanner->pending[scanner->count];
+  h->len = 0;
+  h->strip_tabs = false;
+  if (lexer->lookahead == '-') {
+    h->strip_tabs = true;
+    lexer->advance(lexer, false);
+  }
+  int32_t quote = 0;
+  if (lexer->lookahead == '\'' || lexer->lookahead == '"') {
+    quote = lexer->lookahead;
+    lexer->advance(lexer, false);
+  } else if (lexer->lookahead == '\\') {
+    lexer->advance(lexer, false);
+  }
+  while (lexer->lookahead != 0 && h->len < MAX_DELIMITER) {
+    int32_t c = lexer->lookahead;
+    if (quote ? c == quote || c == '\n'
+              : !(is_alnum_(c) || c == '-' || c == '.' || c == '/')) {
+      break;
+    }
+    h->delimiter[h->len++] = (char)c;
+    lexer->advance(lexer, false);
+  }
+  if (quote) {
+    if (lexer->lookahead != quote) {
+      return false;
+    }
+    lexer->advance(lexer, false);
+  }
+  if (h->len == 0) {
+    return false;
+  }
+  scanner->count++;
+  lexer->result_symbol = HEREDOC_START;
+  return true;
+}
+
+// Consume the lines of the oldest pending here doc, up to and including the
+// line holding its delimiter.
+static bool scan_heredoc_body(Scanner *scanner, TSLexer *lexer) {
+  Heredoc h = scanner->pending[0];
+  scanner->count--;
+  memmove(&scanner->pending[0], &scanner->pending[1],
+          scanner->count * sizeof(Heredoc));
+  for (;;) {
+    if (h.strip_tabs) {
+      while (lexer->lookahead == '\t') {
+        lexer->advance(lexer, false);
+      }
+    }
+    uint8_t matched = 0;
+    while (matched < h.len && lexer->lookahead == h.delimiter[matched]) {
+      lexer->advance(lexer, false);
+      matched++;
+    }
+    if (matched == h.len &&
+        (lexer->lookahead == '\n' || lexer->lookahead == 0)) {
+      if (lexer->lookahead == '\n') {
+        lexer->advance(lexer, false);
+      }
+      break;
+    }
+    while (lexer->lookahead != '\n' && lexer->lookahead != 0) {
+      lexer->advance(lexer, false);
+    }
+    if (lexer->lookahead == 0) {
+      break;
+    }
+    lexer->advance(lexer, false);
+  }
+  lexer->mark_end(lexer);
+  lexer->result_symbol = HEREDOC_BODY;
+  return true;
+}
 
 bool tree_sitter_ysh_external_scanner_scan(void *payload, TSLexer *lexer,
                                            const bool *valid_symbols) {
+  Scanner *scanner = payload;
   if (valid_symbols[ERROR_SENTINEL]) {
     return false;
+  }
+
+  // A here doc body starts on the line after its << operator
+  if (valid_symbols[HEREDOC_BODY] && scanner->count > 0 &&
+      lexer->get_column(lexer) == 0) {
+    return scan_heredoc_body(scanner, lexer);
   }
 
   // Skip whitespaces
@@ -74,6 +207,10 @@ bool tree_sitter_ysh_external_scanner_scan(void *payload, TSLexer *lexer,
     }
     lexer->result_symbol = NEWLINE;
     return true;
+  }
+
+  if (valid_symbols[HEREDOC_START]) {
+    return scan_heredoc_start(scanner, lexer);
   }
 
   if (valid_symbols[COMMA] && lexer->lookahead == ',') {
