@@ -417,8 +417,13 @@ module.exports = grammar({
           ),
           prec.left(seq(
             "[",
-            field("key", $._expression),
-            optional(seq(":", optional($._expression))),
+            choice(
+              seq(
+                field("key", $._expression),
+                optional(seq(":", optional($._expression))),
+              ),
+              seq(":", $._expression),
+            ),
             "]",
           )),
         ),
@@ -547,8 +552,16 @@ module.exports = grammar({
         seq(
           alias($.dollar_expansion, "$"),
           "{",
+          optional(choice("#", "!")),
           choice($.variable_name, alias(/[0-9\*\?\#\@]/, $.variable_name)),
-          optional(seq(":-", $._literal)),
+          optional(seq("[", choice("@", "*", $._expression), "]")),
+          optional(seq(
+            choice(
+              ":-", "-", ":=", "=", ":?", "?", ":+", "+",
+              "##", "#", "%%", "%", "//", "/", "^^", "^", ",,", ",", ":", "|",
+            ),
+            repeat($._brace_expansion_value),
+          )),
           "}",
         ),
         seq(
@@ -575,6 +588,12 @@ module.exports = grammar({
           $._embed_statements,
           ")",
         ),
+      ),
+    _brace_expansion_value: ($) =>
+      choice(
+        $.string,
+        $.expansion,
+        alias(token(prec(-1, /[^}$"'\s\\]+/)), $.word),
       ),
     _embed_statements: ($) =>
       seq(
@@ -661,7 +680,7 @@ module.exports = grammar({
       ),
     _double_quotes_string: ($) =>
       seq(
-        optional("$"),
+        optional(choice("$", "^")),
         choice(
           seq(
             '"',
@@ -725,7 +744,7 @@ module.exports = grammar({
         ),
       ),
     _single_quotes_string: (_) =>
-      choice(/'[^\\']*'/, seq("'''", repeat(choice(/[^\\']+/, "'")), "'''")),
+      choice(/'[^']*'/, seq("'''", repeat(choice(/[^']+/, "'")), "'''")),
     _raw_string: (_) =>
       choice(/r'[^']*'/, seq("r'''", repeat(choice(/[^']+/, "'")), "'''")),
     escaped_double_quote: (_) => '\\"',
@@ -763,7 +782,7 @@ module.exports = grammar({
     escape_sequence: (_) =>
       choice(
         /\\["'\\/bfnrt]/,
-        /\\u\{[0-9a-fA-F]{2,5}\}/,
+        /\\u\{[0-9a-fA-F]{1,6}\}/,
       ),
     null: (_) => "null",
     boolean: (_) => choice("true", "false"),

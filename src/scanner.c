@@ -114,7 +114,8 @@ bool tree_sitter_ysh_external_scanner_scan(void *payload, TSLexer *lexer,
 
   if (valid_symbols[NAMED_PARAM_EQ] && lexer->lookahead == '=') {
     lexer->advance(lexer, false);
-    if (lexer->lookahead != '=') {
+    // == and => are operators, not named parameters
+    if (lexer->lookahead != '=' && lexer->lookahead != '>') {
       lexer->result_symbol = NAMED_PARAM_EQ;
       return true;
     }

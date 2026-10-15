@@ -2222,6 +2222,10 @@
         {
           "type": "while_statement",
           "named": true
+        },
+        {
+          "type": "word",
+          "named": true
         }
       ]
     }
@@ -5889,11 +5893,23 @@
     "named": false
   },
   {
+    "type": "#",
+    "named": false
+  },
+  {
+    "type": "##",
+    "named": false
+  },
+  {
     "type": "$",
     "named": false
   },
   {
     "type": "%",
+    "named": false
+  },
+  {
+    "type": "%%",
     "named": false
   },
   {
@@ -5973,6 +5989,10 @@
     "named": false
   },
   {
+    "type": ",,",
+    "named": false
+  },
+  {
     "type": "-",
     "named": false
   },
@@ -6021,7 +6041,19 @@
     "named": false
   },
   {
+    "type": ":+",
+    "named": false
+  },
+  {
     "type": ":-",
+    "named": false
+  },
+  {
+    "type": ":=",
+    "named": false
+  },
+  {
+    "type": ":?",
     "named": false
   },
   {
@@ -6101,6 +6133,10 @@
     "named": false
   },
   {
+    "type": "?",
+    "named": false
+  },
+  {
     "type": "@",
     "named": false
   },
@@ -6118,6 +6154,10 @@
   },
   {
     "type": "^=",
+    "named": false
+  },
+  {
+    "type": "^^",
     "named": false
   },
   {
