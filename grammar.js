@@ -183,7 +183,7 @@ module.exports = grammar({
         $.proc_block,
       ),
     _rest_of_arguments_param: ($) =>
-      rest_of_arguments($, choice($.named_parameter, $._function_parameter)),
+      rest_of_arguments($, choice($._typed_named_parameter, $._function_parameter)),
     _rest_of_arguments_call_allow_named: ($) =>
       rest_of_arguments($, choice($.named_parameter, $._expression)),
     _rest_of_arguments_call_only_named: ($) =>
@@ -213,7 +213,7 @@ module.exports = grammar({
               optional(
                 seq(
                   alias($.semicolon, ";"),
-                  optional(choice($._function_parameter, $.named_parameter)),
+                  optional(choice($._function_parameter, $._typed_named_parameter)),
                 ),
               ),
             )),
@@ -267,7 +267,7 @@ module.exports = grammar({
             seq(
               "var",
               commaSep1NoNewline(
-                field("variable", $.variable_name),
+                seq(field("variable", $.variable_name), optional($._type)),
               ),
             ),
             seq(
@@ -400,8 +400,14 @@ module.exports = grammar({
     _paren_expression: ($) =>
       seq(
         "(",
-        $._expression,
+        choice($._expression, $.tuple),
         ")",
+      ),
+    tuple: ($) =>
+      seq(
+        $._expression,
+        ",",
+        optional(seq(commaSep1NoNewline($._expression), optional(","))),
       ),
     return_statement: ($) =>
       seq(
@@ -444,16 +450,17 @@ module.exports = grammar({
     _function_call_arguments: ($) =>
       seq(
         "(",
-        choice(
+        optional(choice(
           seq(
-            commaSep1($, field("variable", $._expression)),
-            optional(
-              choice(alias($.comma, ","), alias($.semicolon, ";")),
-            ),
-            commaSep($, $.named_parameter),
+            commaSep1($, choice(field("variable", $._expression), $.spread)),
+            optional(choice(
+              seq(alias($.comma, ","), commaSep1($, $.named_parameter)),
+              $._named_call_arguments,
+            )),
           ),
-          commaSep($, $.named_parameter),
-        ),
+          commaSep1($, $.named_parameter),
+          $._named_call_arguments,
+        )),
         optional(alias($.comma, ",")),
         alias($.close_paren, ")"),
       ),
@@ -486,6 +493,23 @@ module.exports = grammar({
       choice(
         seq(":|", repeat(choice($.word, $._literal)), alias($.closing_list, "|")),
         seq("%(", repeat(choice($.word, $._literal)), alias($.close_paren, ")")),
+      ),
+    _named_call_arguments: ($) =>
+      prec.right(seq(
+        alias($.semicolon, ";"),
+        commaSep($, choice($.named_parameter, $.spread)),
+      )),
+    spread: ($) => seq("...", $._expression),
+    // Parameters in func/proc definitions may carry a type
+    _typed_named_parameter: ($) =>
+      alias($.typed_named_parameter, $.named_parameter),
+    typed_named_parameter: ($) =>
+      seq(
+        $.variable_name,
+        optional($._type),
+        alias($.named_parameter_equals, "="),
+        repeat("\n"),
+        $._expression,
       ),
     named_parameter: ($) =>
       seq(
@@ -538,10 +562,13 @@ module.exports = grammar({
         $._byte_string,
       ),
     method_call: ($) =>
-      seq(
-        choice(".", "->"),
-        field("method", $.function_name),
-        $._function_call_arguments,
+      choice(
+        seq(
+          choice(".", "->"),
+          field("method", $.function_name),
+          $._function_call_arguments,
+        ),
+        prec(-1, seq("->", field("method", $.function_name))),
       ),
     expansion: ($) =>
       choice(
@@ -756,7 +783,14 @@ module.exports = grammar({
       token.immediate(seq("\\", choice("\\", "$"))),
     function_name: ($) => $.variable_name,
     proc_name: (_) => token(/[-_a-zA-Z0-9]+/),
-    _function_parameter: ($) => field("parameter", $.variable_name),
+    _function_parameter: ($) =>
+      seq(field("parameter", $.variable_name), optional($._type)),
+    _type: ($) =>
+      seq(
+        optional(":"),
+        alias($.variable_name, $.type),
+        optional(seq("[", commaSep1NoNewline(alias($.variable_name, $.type)), "]")),
+      ),
     glob: ($) => seq($.word, repeat(seq("|", $.word))),
     eggex: ($) =>
       seq("/", repeat(choice($._literal, prec(-20, /[^"'/]+/))), "/"),
