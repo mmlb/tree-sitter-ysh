@@ -2114,9 +2114,75 @@
         }
       ]
     },
+    "sh_array_assignment": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "TOKEN",
+            "content": {
+              "type": "PATTERN",
+              "value": "[A-Za-z_]\\w*\\+?=\\("
+            }
+          },
+          "named": true,
+          "value": "variable_name"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_sh_array_contents"
+        }
+      ]
+    },
+    "_sh_array_contents": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "word"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "_literal"
+              },
+              {
+                "type": "ALIAS",
+                "content": {
+                  "type": "TOKEN",
+                  "content": {
+                    "type": "PATTERN",
+                    "value": "\\[[^\\]\\s]*\\]=[^\\s()]*"
+                  }
+                },
+                "named": true,
+                "value": "word"
+              },
+              {
+                "type": "STRING",
+                "value": "\n"
+              }
+            ]
+          }
+        },
+        {
+          "type": "STRING",
+          "value": ")"
+        }
+      ]
+    },
     "_command_arg": {
       "type": "CHOICE",
       "members": [
+        {
+          "type": "SYMBOL",
+          "name": "sh_array_assignment"
+        },
         {
           "type": "PREC_LEFT",
           "value": 0,
@@ -3983,6 +4049,28 @@
                       "name": "_literal"
                     }
                   ]
+                }
+              ]
+            },
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "ALIAS",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "environment_equals"
+                  },
+                  "named": false,
+                  "value": "="
+                },
+                {
+                  "type": "STRING",
+                  "value": "("
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "_sh_array_contents"
                 }
               ]
             },

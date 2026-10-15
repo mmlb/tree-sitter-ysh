@@ -351,8 +351,25 @@ module.exports = grammar({
         ),
         choice($._multiline_command_sentinel, $._terminator),
       ),
+    // a=(1 2) as an argument to declare/local
+    sh_array_assignment: ($) =>
+      seq(
+        alias(token(/[A-Za-z_]\w*\+?=\(/), $.variable_name),
+        $._sh_array_contents,
+      ),
+    _sh_array_contents: ($) =>
+      seq(
+        repeat(choice(
+          $.word,
+          $._literal,
+          alias(token(/\[[^\]\s]*\]=[^\s()]*/), $.word),
+          "\n",
+        )),
+        ")",
+      ),
     _command_arg: ($) =>
       choice(
+        $.sh_array_assignment,
         prec.left(alias("-", $.word)),
         $.word,
         $._literal,
@@ -601,6 +618,7 @@ module.exports = grammar({
         alias($.environment_variable_name, $.variable_name),
         choice(
           seq(alias($.environment_equals, "="), choice($.word, $._literal)),
+          seq(alias($.environment_equals, "="), "(", $._sh_array_contents),
           "=",
         ),
       ),
