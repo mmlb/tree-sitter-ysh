@@ -150,6 +150,10 @@ module.exports = grammar({
               $.while_statement,
               $.if_statement,
               $.case_statement,
+              $.sh_if_statement,
+              $.sh_for_statement,
+              $.sh_while_statement,
+              $.sh_case_statement,
             ),
             optional($.redirection),
             optional(seq("|", repeat("\n"), $._single_line_statement)),
@@ -379,17 +383,59 @@ module.exports = grammar({
           )),
         )),
       ),
+    // POSIX shell compound commands, still accepted by YSH
+    _sh_body: ($) => seq(repeat($._terminated_statement), $._statement),
+    sh_if_statement: ($) =>
+      seq(
+        "if",
+        $._sh_body,
+        "then",
+        $._sh_body,
+        repeat(seq("elif", $._sh_body, "then", $._sh_body)),
+        optional(seq("else", $._sh_body)),
+        "fi",
+      ),
+    sh_for_statement: ($) =>
+      seq(
+        "for",
+        $.variable_name,
+        optional(seq("in", repeat(choice($._literal, $.word)))),
+        choice($._terminator, "\n"),
+        "do",
+        $._sh_body,
+        "done",
+      ),
+    sh_while_statement: ($) =>
+      seq(choice("while", "until"), $._sh_body, "do", $._sh_body, "done"),
+    sh_case_statement: ($) =>
+      seq(
+        "case",
+        choice($._literal, $.word),
+        "in",
+        repeat("\n"),
+        repeat($.sh_case_item),
+        "esac",
+      ),
+    sh_case_item: ($) =>
+      prec.right(seq(
+        choice($._literal, $.word),
+        repeat(seq("|", choice($._literal, $.word))),
+        ")",
+        optional($._sh_body),
+        optional(choice(";;", ";&", ";;&")),
+        repeat("\n"),
+      )),
     _control_flow_condition: ($) => choice($._paren_expression, $.command_call),
     while_statement: ($) =>
       prec.right(seq("while", $._control_flow_condition, $.block)),
     if_statement: ($) =>
-      seq(
+      prec.right(seq(
         "if",
         $._control_flow_condition,
         $.block,
         repeat(seq("elif", $._control_flow_condition, $.block)),
         optional(seq("else", $.block)),
-      ),
+      )),
     case_statement: ($) =>
       prec.right(seq(
         "case",

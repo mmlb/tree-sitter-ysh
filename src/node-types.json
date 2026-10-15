@@ -528,6 +528,22 @@
           "named": true
         },
         {
+          "type": "sh_case_statement",
+          "named": true
+        },
+        {
+          "type": "sh_for_statement",
+          "named": true
+        },
+        {
+          "type": "sh_if_statement",
+          "named": true
+        },
+        {
+          "type": "sh_while_statement",
+          "named": true
+        },
+        {
           "type": "shvar",
           "named": true
         },
@@ -1049,6 +1065,22 @@
         },
         {
           "type": "redirection",
+          "named": true
+        },
+        {
+          "type": "sh_case_statement",
+          "named": true
+        },
+        {
+          "type": "sh_for_statement",
+          "named": true
+        },
+        {
+          "type": "sh_if_statement",
+          "named": true
+        },
+        {
+          "type": "sh_while_statement",
           "named": true
         },
         {
@@ -2312,6 +2344,22 @@
           "named": true
         },
         {
+          "type": "sh_case_statement",
+          "named": true
+        },
+        {
+          "type": "sh_for_statement",
+          "named": true
+        },
+        {
+          "type": "sh_if_statement",
+          "named": true
+        },
+        {
+          "type": "sh_while_statement",
+          "named": true
+        },
+        {
           "type": "shvar",
           "named": true
         },
@@ -2850,6 +2898,22 @@
         },
         {
           "type": "redirection",
+          "named": true
+        },
+        {
+          "type": "sh_case_statement",
+          "named": true
+        },
+        {
+          "type": "sh_for_statement",
+          "named": true
+        },
+        {
+          "type": "sh_if_statement",
+          "named": true
+        },
+        {
+          "type": "sh_while_statement",
           "named": true
         },
         {
@@ -4174,6 +4238,22 @@
           "named": true
         },
         {
+          "type": "sh_case_statement",
+          "named": true
+        },
+        {
+          "type": "sh_for_statement",
+          "named": true
+        },
+        {
+          "type": "sh_if_statement",
+          "named": true
+        },
+        {
+          "type": "sh_while_statement",
+          "named": true
+        },
+        {
           "type": "shvar",
           "named": true
         },
@@ -4834,6 +4914,22 @@
           "named": true
         },
         {
+          "type": "sh_case_statement",
+          "named": true
+        },
+        {
+          "type": "sh_for_statement",
+          "named": true
+        },
+        {
+          "type": "sh_if_statement",
+          "named": true
+        },
+        {
+          "type": "sh_while_statement",
+          "named": true
+        },
+        {
           "type": "shvar",
           "named": true
         },
@@ -4990,6 +5086,22 @@
           "named": true
         },
         {
+          "type": "sh_case_statement",
+          "named": true
+        },
+        {
+          "type": "sh_for_statement",
+          "named": true
+        },
+        {
+          "type": "sh_if_statement",
+          "named": true
+        },
+        {
+          "type": "sh_while_statement",
+          "named": true
+        },
+        {
           "type": "shvar",
           "named": true
         },
@@ -5101,6 +5213,22 @@
           "named": true
         },
         {
+          "type": "sh_case_statement",
+          "named": true
+        },
+        {
+          "type": "sh_for_statement",
+          "named": true
+        },
+        {
+          "type": "sh_if_statement",
+          "named": true
+        },
+        {
+          "type": "sh_while_statement",
+          "named": true
+        },
+        {
           "type": "shvar",
           "named": true
         },
@@ -5129,6 +5257,433 @@
       "types": [
         {
           "type": "variable_name",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "sh_case_item",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "block",
+          "named": true
+        },
+        {
+          "type": "boolean",
+          "named": true
+        },
+        {
+          "type": "case_statement",
+          "named": true
+        },
+        {
+          "type": "command_call",
+          "named": true
+        },
+        {
+          "type": "const_declaration",
+          "named": true
+        },
+        {
+          "type": "expansion",
+          "named": true
+        },
+        {
+          "type": "expression_mode",
+          "named": true
+        },
+        {
+          "type": "for_statement",
+          "named": true
+        },
+        {
+          "type": "function_definition",
+          "named": true
+        },
+        {
+          "type": "if_statement",
+          "named": true
+        },
+        {
+          "type": "multiline_command_call",
+          "named": true
+        },
+        {
+          "type": "number",
+          "named": true
+        },
+        {
+          "type": "proc_definition",
+          "named": true
+        },
+        {
+          "type": "redirection",
+          "named": true
+        },
+        {
+          "type": "sh_case_statement",
+          "named": true
+        },
+        {
+          "type": "sh_for_statement",
+          "named": true
+        },
+        {
+          "type": "sh_if_statement",
+          "named": true
+        },
+        {
+          "type": "sh_while_statement",
+          "named": true
+        },
+        {
+          "type": "shvar",
+          "named": true
+        },
+        {
+          "type": "string",
+          "named": true
+        },
+        {
+          "type": "variable_assignment",
+          "named": true
+        },
+        {
+          "type": "variable_declaration",
+          "named": true
+        },
+        {
+          "type": "while_statement",
+          "named": true
+        },
+        {
+          "type": "word",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "sh_case_statement",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "boolean",
+          "named": true
+        },
+        {
+          "type": "expansion",
+          "named": true
+        },
+        {
+          "type": "number",
+          "named": true
+        },
+        {
+          "type": "sh_case_item",
+          "named": true
+        },
+        {
+          "type": "string",
+          "named": true
+        },
+        {
+          "type": "word",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "sh_for_statement",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "block",
+          "named": true
+        },
+        {
+          "type": "boolean",
+          "named": true
+        },
+        {
+          "type": "case_statement",
+          "named": true
+        },
+        {
+          "type": "command_call",
+          "named": true
+        },
+        {
+          "type": "const_declaration",
+          "named": true
+        },
+        {
+          "type": "expansion",
+          "named": true
+        },
+        {
+          "type": "expression_mode",
+          "named": true
+        },
+        {
+          "type": "for_statement",
+          "named": true
+        },
+        {
+          "type": "function_definition",
+          "named": true
+        },
+        {
+          "type": "if_statement",
+          "named": true
+        },
+        {
+          "type": "multiline_command_call",
+          "named": true
+        },
+        {
+          "type": "number",
+          "named": true
+        },
+        {
+          "type": "proc_definition",
+          "named": true
+        },
+        {
+          "type": "redirection",
+          "named": true
+        },
+        {
+          "type": "sh_case_statement",
+          "named": true
+        },
+        {
+          "type": "sh_for_statement",
+          "named": true
+        },
+        {
+          "type": "sh_if_statement",
+          "named": true
+        },
+        {
+          "type": "sh_while_statement",
+          "named": true
+        },
+        {
+          "type": "shvar",
+          "named": true
+        },
+        {
+          "type": "string",
+          "named": true
+        },
+        {
+          "type": "variable_assignment",
+          "named": true
+        },
+        {
+          "type": "variable_declaration",
+          "named": true
+        },
+        {
+          "type": "variable_name",
+          "named": true
+        },
+        {
+          "type": "while_statement",
+          "named": true
+        },
+        {
+          "type": "word",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "sh_if_statement",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "block",
+          "named": true
+        },
+        {
+          "type": "case_statement",
+          "named": true
+        },
+        {
+          "type": "command_call",
+          "named": true
+        },
+        {
+          "type": "const_declaration",
+          "named": true
+        },
+        {
+          "type": "expression_mode",
+          "named": true
+        },
+        {
+          "type": "for_statement",
+          "named": true
+        },
+        {
+          "type": "function_definition",
+          "named": true
+        },
+        {
+          "type": "if_statement",
+          "named": true
+        },
+        {
+          "type": "multiline_command_call",
+          "named": true
+        },
+        {
+          "type": "proc_definition",
+          "named": true
+        },
+        {
+          "type": "redirection",
+          "named": true
+        },
+        {
+          "type": "sh_case_statement",
+          "named": true
+        },
+        {
+          "type": "sh_for_statement",
+          "named": true
+        },
+        {
+          "type": "sh_if_statement",
+          "named": true
+        },
+        {
+          "type": "sh_while_statement",
+          "named": true
+        },
+        {
+          "type": "shvar",
+          "named": true
+        },
+        {
+          "type": "variable_assignment",
+          "named": true
+        },
+        {
+          "type": "variable_declaration",
+          "named": true
+        },
+        {
+          "type": "while_statement",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "sh_while_statement",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "block",
+          "named": true
+        },
+        {
+          "type": "case_statement",
+          "named": true
+        },
+        {
+          "type": "command_call",
+          "named": true
+        },
+        {
+          "type": "const_declaration",
+          "named": true
+        },
+        {
+          "type": "expression_mode",
+          "named": true
+        },
+        {
+          "type": "for_statement",
+          "named": true
+        },
+        {
+          "type": "function_definition",
+          "named": true
+        },
+        {
+          "type": "if_statement",
+          "named": true
+        },
+        {
+          "type": "multiline_command_call",
+          "named": true
+        },
+        {
+          "type": "proc_definition",
+          "named": true
+        },
+        {
+          "type": "redirection",
+          "named": true
+        },
+        {
+          "type": "sh_case_statement",
+          "named": true
+        },
+        {
+          "type": "sh_for_statement",
+          "named": true
+        },
+        {
+          "type": "sh_if_statement",
+          "named": true
+        },
+        {
+          "type": "sh_while_statement",
+          "named": true
+        },
+        {
+          "type": "shvar",
+          "named": true
+        },
+        {
+          "type": "variable_assignment",
+          "named": true
+        },
+        {
+          "type": "variable_declaration",
+          "named": true
+        },
+        {
+          "type": "while_statement",
           "named": true
         }
       ]
@@ -6819,6 +7374,18 @@
     "named": false
   },
   {
+    "type": ";&",
+    "named": false
+  },
+  {
+    "type": ";;",
+    "named": false
+  },
+  {
+    "type": ";;&",
+    "named": false
+  },
+  {
     "type": "<",
     "named": false
   },
@@ -6940,11 +7507,23 @@
     "named": false
   },
   {
+    "type": "do",
+    "named": false
+  },
+  {
+    "type": "done",
+    "named": false
+  },
+  {
     "type": "elif",
     "named": false
   },
   {
     "type": "else",
+    "named": false
+  },
+  {
+    "type": "esac",
     "named": false
   },
   {
@@ -6974,6 +7553,10 @@
   },
   {
     "type": "false",
+    "named": false
+  },
+  {
+    "type": "fi",
     "named": false
   },
   {
@@ -7046,6 +7629,10 @@
     "named": false
   },
   {
+    "type": "then",
+    "named": false
+  },
+  {
     "type": "true",
     "named": false
   },
@@ -7063,6 +7650,10 @@
   },
   {
     "type": "u'''",
+    "named": false
+  },
+  {
+    "type": "until",
     "named": false
   },
   {
